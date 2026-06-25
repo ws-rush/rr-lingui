@@ -1,6 +1,6 @@
 # rr-lingui
 
-React Router v7 framework-mode integration for Lingui.
+React Router v8 framework-mode integration for Lingui.
 
 This package is already used by `apps/web` as a URL-prefixed i18n setup with the default locale hidden:
 
@@ -16,7 +16,7 @@ This package is already used by `apps/web` as a URL-prefixed i18n setup with the
 
 ```sh
 pnpm add rr-lingui @lingui/core @lingui/react
-pnpm add -D @lingui/cli @lingui/conf @lingui/vite-plugin
+pnpm add -D @lingui/cli @lingui/conf @lingui/vite-plugin @lingui/format-po
 ```
 
 > Looking for a ready-made wiring for your config? See the
@@ -30,9 +30,10 @@ Use Lingui catalogs as normal. `apps/web` stores compiled/importable catalogs at
 
 ```ts
 // lingui.config.ts
-import { type LinguiConfig } from '@lingui/conf'
+import { defineConfig } from '@lingui/cli'
+import { formatter } from '@lingui/format-po'
 
-const config: LinguiConfig = {
+export default defineConfig({
   catalogs: [
     {
       exclude: ['**/app/locales', '**/app/*-env.d.ts'],
@@ -41,12 +42,10 @@ const config: LinguiConfig = {
     },
   ],
   fallbackLocales: { default: 'ar' },
-  format: 'po',
+  format: formatter({ origins: false }),
   locales: ['en', 'ar'],
   sourceLocale: 'ar',
-}
-
-export default config
+})
 ```
 
 ```ts
@@ -594,7 +593,7 @@ Config and runtime errors are prefixed with `[rr-lingui]` and name the offending
 - Regional-to-base fallback is enabled by default.
 - Config validation is fail-fast.
 - Catalog loading failures always throw.
-- Package targets React Router v7 framework mode first.
+- Package targets React Router v8 framework mode first.
 - Package ships ESM + `.d.ts`, with React/React Router/Lingui as peer dependencies.
 
 ### Core API sketch

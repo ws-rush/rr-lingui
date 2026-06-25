@@ -134,3 +134,7 @@ Thumbs.db
 
 .react-router
 .vite
+
+# Vitepress
+docs/.vitepress/dist
+docs/.vitepress/cache

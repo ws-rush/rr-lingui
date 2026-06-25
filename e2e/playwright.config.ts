@@ -46,7 +46,7 @@ export default defineConfig({
     port: p.port,
     path: '/',
     timeout: 180_000,
-    reuseExistingServer: !CI,
+    reuseExistingServer: false,
   })),
   projects: projects.map((p) => ({
     name: p.name,

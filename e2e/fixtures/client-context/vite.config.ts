@@ -16,6 +16,7 @@ export default defineConfig({
       'react-router',
       '@lingui/core',
       '@lingui/react',
+      'rr-lingui',
     ],
   },
 })

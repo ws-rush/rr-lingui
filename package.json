@@ -30,8 +30,10 @@
   ],
   "scripts": {
     "test": "vitest run --dir tests",
+    "test:e2e": "pnpm build && pnpm pack && rm -rf e2e/node_modules/rr-lingui && mkdir -p e2e/node_modules/rr-lingui && tar -xzf rr-lingui-*.tgz -C e2e/node_modules/rr-lingui --strip-components=1 && rm -f rr-lingui-*.tgz && pnpm --filter @rr-lingui/e2e test",
+    "test:all": "pnpm test && pnpm test:e2e",
     "typecheck": "tsc --noEmit",
-    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "build": "rm -rf dist && vite build",
     "release": "bumpp"
   },
   "keywords": [
@@ -59,6 +61,8 @@
     "react-dom": "19.2.7",
     "react-router": "^8.0.1",
     "typescript": "^5.9.3",
+    "vite": "8.0.16",
+    "vite-plugin-dts": "^5.0.3",
     "vitest": "^4.0.18"
   },
   "engines": {

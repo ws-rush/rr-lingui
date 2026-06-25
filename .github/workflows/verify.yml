@@ -55,7 +55,5 @@ jobs:
       - name: Install Playwright browsers (if not cached)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm --filter @rr-lingui/e2e install-browsers
-      - name: Build rr-lingui library
-        run: pnpm build
       - name: Run E2E Tests
-        run: pnpm --filter @rr-lingui/e2e test
+        run: pnpm test:e2e

@@ -1,4 +1,4 @@
-import { setupI18n, type Messages } from '@lingui/core'
+import type { Messages } from '@lingui/core'
 import { redirect } from 'react-router'
 import type { LinguiRouter, LinguiState, LinguiRootLoaderData, LocaleMeta, LocaleDirection, CatalogModule, CatalogLoader } from './types'
 import { matchSupportedLocale, normalizeLocaleCode, appendHeaders, safeRedirectPath } from './utils'
@@ -43,9 +43,6 @@ export function createLocaleAction(router: LinguiRouter) {
 export async function loadLinguiState(router: LinguiRouter, locale: string): Promise<LinguiState> {
   const matchedLocale = matchSupportedLocale(locale, router.localeCodes, router.fallbackLocale)
   const messages = await readCatalogMessages(router.config.catalogs[matchedLocale]!, matchedLocale)
-  const i18n = setupI18n()
-  i18n.load(matchedLocale, messages)
-  i18n.activate(matchedLocale)
   const localeMeta = router.locales.find((item) => item.code === matchedLocale)!
   return { locale: matchedLocale, localeMeta, locales: router.locales, messages, htmlAttrs: getHtmlAttrs(localeMeta) }
 }
@@ -69,10 +66,35 @@ async function readCatalogMessages(loader: CatalogLoader, locale: string): Promi
     throw new Error(`[rr-lingui] Catalog for locale "${locale}" resolved to ${describeCatalogShape(mod)}. Expected a module with a "messages" export (e.g. { messages: { ... } }) or a raw messages record.`)
   }
 
-  const messages = 'messages' in mod ? mod.messages : mod
-  if (messages == null || typeof messages !== 'object') {
+  let unwrapped = mod
+  if (
+    'default' in mod &&
+    mod.default != null &&
+    typeof mod.default === 'object' &&
+    !Array.isArray(mod.default)
+  ) {
+    const outerHasValidMessages = 'messages' in mod && mod.messages != null && typeof mod.messages === 'object' && !Array.isArray(mod.messages)
+    if (!outerHasValidMessages) {
+      unwrapped = mod.default as CatalogModule
+    }
+  }
+
+  let messages: unknown
+  if ('messages' in unwrapped) {
+    const val = unwrapped.messages
+    if (val === null || val === undefined || (typeof val === 'object' && !Array.isArray(val))) {
+      messages = val
+    } else {
+      messages = unwrapped
+    }
+  } else {
+    messages = unwrapped
+  }
+
+  if (messages == null || typeof messages !== 'object' || Array.isArray(messages)) {
     throw new Error(`[rr-lingui] Catalog for locale "${locale}" did not contain usable messages. Expected a module with a "messages" export (e.g. { messages: { ... } }) or a raw messages record, got ${describeCatalogShape(mod)}.`)
   }
+
   return messages as Messages
 }
 

@@ -2,7 +2,8 @@ export * from './types'
 export {
   normalizeLocaleCode,
   matchSupportedLocale,
-  serializeCookie
+  serializeCookie,
+  safeRedirectPath
 } from './utils'
 export {
   validateConfig,

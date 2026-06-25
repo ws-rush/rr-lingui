@@ -19,19 +19,37 @@ export function matchSupportedLocale(candidate: string | null | undefined, suppo
   if (!candidate) return fallbackLocale
   const supported = supportedLocales.map(normalizeLocaleCode)
   const normalized = normalizeLocaleCode(candidate)
+
+  // 1. Try exact match first (case-insensitive)
   const exact = supported.find((locale) => locale.toLowerCase() === normalized.toLowerCase())
   if (exact) return exact
 
-  const base = normalized.split('-')[0]
-  const baseMatch = supported.find((locale) => locale.toLowerCase() === base?.toLowerCase())
+  // 2. Try progressive matching (split by hyphen and drop region/script components from the end)
+  const parts = normalized.split('-')
+  for (let i = parts.length - 1; i > 0; i--) {
+    const sub = parts.slice(0, i).join('-').toLowerCase()
+    const match = supported.find((locale) => locale.toLowerCase() === sub)
+    if (match) return match
+  }
+
+  // 3. Try matching by base language (the very first segment) as a final fallback before fallbackLocale
+  const base = parts[0]?.toLowerCase()
+  const baseMatch = supported.find((locale) => locale.toLowerCase() === base)
   return baseMatch ?? fallbackLocale
 }
 
 export function parseCookie(header: string | null, name: string): string | null {
   if (!header) return null
   for (const part of header.split(';')) {
-    const [rawKey, ...rawValue] = part.trim().split('=')
-    if (rawKey === name) return decodeURIComponent(rawValue.join('='))
+    const [rawKey, ...rawValue] = part.split('=')
+    const key = rawKey.trim()
+    if (key === name) {
+      let value = rawValue.join('=').trim()
+      if (value.startsWith('"') && value.endsWith('"')) {
+        value = value.slice(1, -1)
+      }
+      return decodeURIComponent(value)
+    }
   }
   return null
 }
@@ -43,9 +61,10 @@ export function parseAcceptLanguage(value: string | null): string | null {
     .map((part) => {
       const [locale, ...params] = part.trim().split(';')
       const q = params.find((param) => param.trim().startsWith('q='))?.split('=')[1]
-      return { locale, q: q ? Number(q) : 1 }
+      const parsedQ = q ? Number(q) : 1
+      return { locale: locale?.trim(), q: isNaN(parsedQ) ? 0 : parsedQ }
     })
-    .filter((item) => item.locale)
+    .filter((item) => item.locale && item.q > 0)
     .sort((a, b) => b.q - a.q)[0]?.locale ?? null
 }
 
@@ -61,10 +80,10 @@ export function serializeCookie(name: string, value: string, options: CookieOpti
 
 export function safeRedirectPath(path: string): string {
   if (!path.startsWith('/')) return '/'
-  // Block protocol-relative and backslash-based open-redirect payloads such as
-  // `//evil.com` or `/\evil.com`. Browsers normalize `/` and `\`, so a leading
-  // run of either can be interpreted as an absolute off-site URL.
-  if (/^[\\/]{2}/.test(path)) return '/'
+  // Remove control characters and spaces that browsers might strip/normalize,
+  // then check if it is protocol-relative or backslash-based.
+  const cleaned = path.replace(/[\s\u0000-\u001F\u007F-\u009F]/g, '')
+  if (/^[\\/]{2}/.test(cleaned)) return '/'
   return path
 }
 

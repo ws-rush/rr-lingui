@@ -25,6 +25,8 @@ import {
   type LinguiRouterConfig,
   type LinguiState,
 } from '../src/index'
+import { parseCookie, safeRedirectPath } from '../src/utils'
+
 
 describe('locale normalization', () => {
   it('canonicalizes BCP-47-ish casing', () => {
@@ -192,6 +194,39 @@ describe('catalog shapes', () => {
     expect(state.messages).toEqual({ hello: 'Hello' })
   })
 
+  it('loads a catalog wrapped in an ES module default export (nested messages)', async () => {
+    const i18n = createLinguiRouter({
+      server: true,
+      mode: 'context',
+      locales: ['en', 'ar'],
+      defaultLocale: 'en',
+      catalogs: {
+        en: async () => ({ default: { messages: { hello: 'Hello ES' } } }) as any,
+        ar: async () => ({ messages: {} }),
+      },
+    })
+
+    const state = await loadLinguiState(i18n, 'en')
+    expect(state.messages).toEqual({ hello: 'Hello ES' })
+  })
+
+  it('loads a catalog wrapped in an ES module default export (bare messages)', async () => {
+    const i18n = createLinguiRouter({
+      server: true,
+      mode: 'context',
+      locales: ['en', 'ar'],
+      defaultLocale: 'en',
+      catalogs: {
+        en: async () => ({ default: { hello: 'Hello ES Bare' } }) as any,
+        ar: async () => ({ messages: {} }),
+      },
+    })
+
+    const state = await loadLinguiState(i18n, 'en')
+    expect(state.messages).toEqual({ hello: 'Hello ES Bare' })
+  })
+
+
   it('accepts an empty messages catalog', async () => {
     const i18n = createLinguiRouter({
       server: true,
@@ -262,9 +297,15 @@ describe('URL prefix rewrite', () => {
     expect(rewriteLocalePath('/en-us/about', 'en', ['en', 'ar'])).toBe('/en/about')
   })
 
+
+
   it('keeps an unsupported locale-looking segment that is not locale-like', () => {
     // 'about' is not locale-like, so it is treated as a real path segment.
     expect(rewriteLocalePath('/about', 'ar', ['en', 'ar'])).toBe('/ar/about')
+  })
+
+  it('keeps an unsupported locale-like segment if it is a normal path segment (e.g. app)', () => {
+    expect(rewriteLocalePath('/app/dashboard', 'ar', ['en', 'ar'])).toBe('/ar/app/dashboard')
   })
 
   it('respects a custom ignorePaths list that replaces the defaults', () => {
@@ -305,6 +346,29 @@ describe('detectors and persistence', () => {
 
     const locale = await serverDetectors.acceptLanguage().detect({ request })
     expect(locale).toBe('ar-EG')
+  })
+})
+
+describe('cookie parsing', () => {
+  it('parses cookies exactly matching the name', () => {
+    expect(parseCookie('locale=en', 'locale')).toBe('en')
+    expect(parseCookie('other_locale=ar; locale=en', 'locale')).toBe('en')
+    expect(parseCookie('locale=en; other_locale=ar', 'locale')).toBe('en')
+  })
+
+  it('does not do prefix or substring matching on cookie names', () => {
+    expect(parseCookie('locale_suffix=en', 'locale')).toBeNull()
+    expect(parseCookie('prefix_locale=en', 'locale')).toBeNull()
+  })
+
+  it('tolerates spaces around name and value', () => {
+    expect(parseCookie('locale = en', 'locale')).toBe('en')
+    expect(parseCookie('  locale  =  en  ', 'locale')).toBe('en')
+  })
+
+  it('unwraps double-quoted cookie values', () => {
+    expect(parseCookie('locale="en"', 'locale')).toBe('en')
+    expect(parseCookie('locale="en-US"', 'locale')).toBe('en-US')
   })
 })
 
@@ -1627,6 +1691,39 @@ describe('createLocaleAction', () => {
     expect(response.headers.get('Location')).toBe('/current')
     expect(response.headers.getSetCookie()).toEqual([])
   })
+
+  it('prevents open redirects in createLocaleAction', async () => {
+    const i18n = createLinguiRouter({
+      server: true,
+      mode: 'context',
+      locales: ['en', 'ar'],
+      defaultLocale: 'en',
+      catalogs: {
+        en: async () => ({ messages: {} }),
+        ar: async () => ({ messages: {} }),
+      },
+    })
+    const action = createLocaleAction(i18n)
+
+    const payloads = [
+      { redirectTo: '//evil.com', expected: '/' },
+      { redirectTo: '/\\evil.com', expected: '/' },
+      { redirectTo: '/\t/evil.com', expected: '/' },
+      { redirectTo: '/\n/evil.com', expected: '/' },
+      { redirectTo: '/\r/evil.com', expected: '/' },
+      { redirectTo: '/\\/evil.com', expected: '/' },
+      { redirectTo: '///evil.com', expected: '/' },
+    ]
+
+    for (const { redirectTo, expected } of payloads) {
+      const request = new Request('https://example.com/change-locale', {
+        method: 'POST',
+        body: new URLSearchParams({ locale: 'ar', redirectTo }),
+      })
+      const response = await action({ request })
+      expect(response.headers.get('Location')).toBe(expected)
+    }
+  })
 })
 
 // Faithful essence of React Router's `SerializeFrom` (from
@@ -1814,6 +1911,19 @@ describe('createLinguiShouldRevalidate', () => {
     ).toBe(false)
   })
 
+  it('revalidates when the formAction is prefixed with a supported locale', () => {
+    const currentUrl = new URL('https://example.com/ar/about')
+    expect(
+      shouldRevalidate({
+        ...baseArgs,
+        currentUrl,
+        nextUrl: currentUrl,
+        formAction: '/ar/change-locale',
+        formMethod: 'POST',
+      }),
+    ).toBe(true)
+  })
+
   it('honors a custom action path', () => {
     const shouldRevalidateCustom = createLinguiShouldRevalidate(i18n, {
       actionPath: '/i18n/switch',
@@ -1839,4 +1949,27 @@ describe('createLinguiShouldRevalidate', () => {
     ).toBe(false)
   })
 })
+
+describe('safeRedirectPath', () => {
+  it('blocks dangerous redirect paths and allows safe ones', () => {
+    expect(safeRedirectPath('/home')).toBe('/home')
+    expect(safeRedirectPath('/about/us?ref=xyz')).toBe('/about/us?ref=xyz')
+    expect(safeRedirectPath('//evil.com')).toBe('/')
+    expect(safeRedirectPath('/\\evil.com')).toBe('/')
+    expect(safeRedirectPath('/\\/evil.com')).toBe('/')
+    expect(safeRedirectPath('///evil.com')).toBe('/')
+    expect(safeRedirectPath('https://evil.com')).toBe('/')
+    expect(safeRedirectPath('//')).toBe('/')
+    expect(safeRedirectPath('/%2f/evil.com')).toBe('/%2f/evil.com')
+  })
+
+  it('blocks control character bypasses (tab, newline, CR)', () => {
+    expect(safeRedirectPath('/\t/evil.com')).toBe('/')
+    expect(safeRedirectPath('/\n/evil.com')).toBe('/')
+    expect(safeRedirectPath('/\r/evil.com')).toBe('/')
+    expect(safeRedirectPath('/\n\r\t/evil.com')).toBe('/')
+    expect(safeRedirectPath('/\\\t/evil.com')).toBe('/')
+  })
+})
+
 

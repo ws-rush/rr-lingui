@@ -43,13 +43,15 @@ function createLinguiMiddlewareImpl(router: LinguiRouter): MiddlewareFunction<Re
 
       if (hasCanonicalLocalePrefix) {
         if (hidesDefaultLocale && pathLocale.locale === router.defaultLocale) {
-          const location = rewriteLocalePath(`${pathname}${url.search}${url.hash}`, router.defaultLocale, router.localeCodes, {
-            defaultLocale: router.defaultLocale,
-            prefixDefaultLocale: router.config.prefixDefaultLocale,
-            ignorePaths: router.config.ignorePaths,
-          })
-          const redirectLocation = isSingleFetch ? appendDataSuffix(location) : location
-          return redirectResponse(redirectLocation)
+          if (args.request.method === 'GET' || args.request.method === 'HEAD') {
+            const location = rewriteLocalePath(`${pathname}${url.search}${url.hash}`, router.defaultLocale, router.localeCodes, {
+              defaultLocale: router.defaultLocale,
+              prefixDefaultLocale: router.config.prefixDefaultLocale,
+              ignorePaths: router.config.ignorePaths,
+            })
+            const redirectLocation = isSingleFetch ? appendDataSuffix(location) : location
+            return redirectResponse(redirectLocation)
+          }
         }
 
         const state = await loadLinguiState(router, pathLocale.locale!)
@@ -66,6 +68,12 @@ function createLinguiMiddlewareImpl(router: LinguiRouter): MiddlewareFunction<Re
       })
 
       if (hidesDefaultLocale && targetLocale === router.defaultLocale && location === `${pathname}${url.search}${url.hash}`) {
+        const state = await loadLinguiState(router, targetLocale)
+        args.context.set(linguiRouterContext, state)
+        return next()
+      }
+
+      if (args.request.method !== 'GET' && args.request.method !== 'HEAD') {
         const state = await loadLinguiState(router, targetLocale)
         args.context.set(linguiRouterContext, state)
         return next()
@@ -104,9 +112,23 @@ export function createLinguiShouldRevalidate(
   _router: LinguiRouter,
   options: { actionPath?: string } = {},
 ): ShouldRevalidateFunction {
-  const actionPath = options.actionPath ?? DEFAULT_LOCALE_ACTION_PATH
+  const actionPath = (options.actionPath ?? DEFAULT_LOCALE_ACTION_PATH).replace(/\/$/, '')
   return ({ currentUrl, nextUrl, formAction }: ShouldRevalidateFunctionArgs): boolean => {
     const formActionPathname = formAction ? new URL(formAction, currentUrl).pathname : null
-    return formActionPathname === actionPath || currentUrl.pathname !== nextUrl.pathname
+    if (!formActionPathname) return currentUrl.pathname !== nextUrl.pathname
+
+    let cleanPath = formActionPathname.replace(/\/$/, '')
+    if (cleanPath.endsWith('.data')) {
+      cleanPath = cleanPath.slice(0, -5).replace(/\/$/, '')
+    }
+
+    const segments = cleanPath.split('/').filter(Boolean)
+    const first = segments[0]
+    if (first && matchSupportedLocale(first, _router.localeCodes, '')) {
+      segments.shift()
+    }
+    const normalizedFormAction = `/${segments.join('/')}`
+
+    return normalizedFormAction === actionPath || currentUrl.pathname !== nextUrl.pathname
   }
 }

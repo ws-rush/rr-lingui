@@ -11,7 +11,13 @@ export const defaultIgnorePaths: Array<RegExp | string> = [
 ]
 
 export function isIgnoredPath(pathname: string, ignorePaths: Array<RegExp | string> = defaultIgnorePaths): boolean {
-  return ignorePaths.some((pattern) => (typeof pattern === 'string' ? pathname.startsWith(pattern) : pattern.test(pathname)))
+  return ignorePaths.some((pattern) => {
+    if (typeof pattern === 'string') return pathname.startsWith(pattern)
+    pattern.lastIndex = 0
+    const matches = pattern.test(pathname)
+    pattern.lastIndex = 0
+    return matches
+  })
 }
 
 const ISO_639_1 = new Set([

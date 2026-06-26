@@ -5,7 +5,7 @@ import {
   createLinguiShouldRevalidate,
   LinguiRouterProvider,
   type LinguiRootLoaderData,
-} from 'rr-lingui'
+} from 'lingui-rr'
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useRouteLoaderData } from 'react-router'
 import { defaultLocale, i18n } from './lib/i18n'
 

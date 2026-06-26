@@ -1,5 +1,5 @@
 // Generates four minimal React Router framework-mode apps under fixtures/<config>/,
-// one per rr-lingui configuration. Each fixture is a standalone app so it builds
+// one per lingui-rr configuration. Each fixture is a standalone app so it builds
 // in exactly one mode (SSR apps export `middleware`/`loader`; SPA apps export
 // `clientMiddleware`/`clientLoader` — React Router statically forbids the server
 // exports in SPA mode, so a single shared root cannot satisfy both).
@@ -34,7 +34,7 @@ export default defineConfig({
       'react-router',
       '@lingui/core',
       '@lingui/react',
-      'rr-lingui',
+      'lingui-rr',
     ],
   },
 })
@@ -65,7 +65,7 @@ const viteEnv = `/// <reference types="vite/client" />\n`
 
 const homeTsx = `import { useLingui } from '@lingui/react'
 import { Form, useLocation } from 'react-router'
-import { useLinguiRouter } from 'rr-lingui'
+import { useLinguiRouter } from 'lingui-rr'
 
 export default function Home() {
   const { _ } = useLingui()
@@ -154,7 +154,7 @@ export default function handleRequest(
 `
 
 function changeLocaleTs(f) {
-  return `import { createLocaleAction } from 'rr-lingui'
+  return `import { createLocaleAction } from 'lingui-rr'
 import { i18n } from '../lib/i18n'
 
 export const ${f.client ? 'clientAction' : 'action'} = createLocaleAction(i18n)
@@ -166,8 +166,8 @@ export const ${f.client ? 'clientAction' : 'action'} = createLocaleAction(i18n)
 const locales = `  en: { label: 'English', dir: 'ltr' },
   ar: { label: 'العربية', dir: 'rtl' },`
 
-const catalogs = `      en: async () => ({ messages: { greeting: 'Hello from rr-lingui' } }),
-      ar: async () => ({ messages: { greeting: 'مرحبا من rr-lingui' } }),`
+const catalogs = `      en: async () => ({ messages: { greeting: 'Hello from lingui-rr' } }),
+      ar: async () => ({ messages: { greeting: 'مرحبا من lingui-rr' } }),`
 
 const ignorePaths = `    ignorePaths: [/^\\/assets\\//, /^\\/api\\//, /^\\/change-locale(?:\\.data)?$/],`
 
@@ -200,8 +200,8 @@ ${f.context ? '' : "  prefixDefaultLocale: false,\n"}  detection: ${
   persistence: ${f.context ? "[clientPersistence.localStorage('locale')]" : "[clientPersistence.cookie('locale')]"},`
 
   const importBlock = f.client
-    ? `import { clientDetectors, clientPersistence, createLinguiRouter } from 'rr-lingui'`
-    : `import { createLinguiRouter, serverDetectors, serverPersistence } from 'rr-lingui'`
+    ? `import { clientDetectors, clientPersistence, createLinguiRouter } from 'lingui-rr'`
+    : `import { createLinguiRouter, serverDetectors, serverPersistence } from 'lingui-rr'`
 
   return `// Auto-generated fixture. ${f.client ? 'Client-only (server: false)' : 'SSR (server: true)'}, mode: ${f.context ? 'context' : 'url-prefix'}.
 ${importBlock}
@@ -227,14 +227,14 @@ function rootTsx(f) {
   createLinguiShouldRevalidate,
   LinguiRouterProvider,
   type LinguiRootLoaderData,
-} from 'rr-lingui'`
+} from 'lingui-rr'`
     : `import {
   createLinguiMiddleware,
   createLinguiRootLoader,
   createLinguiShouldRevalidate,
   LinguiRouterProvider,
   type LinguiRootLoaderData,
-} from 'rr-lingui'`
+} from 'lingui-rr'`
 
   const exports = f.client
     ? `export const clientMiddleware = [createLinguiClientMiddleware(i18n)]

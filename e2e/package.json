@@ -1,9 +1,9 @@
 {
-  "name": "@rr-lingui/e2e",
+  "name": "@lingui-rr/e2e",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "Playwright E2E harness for rr-lingui across all four configurations.",
+  "description": "Playwright E2E harness for lingui-rr across all four configurations.",
   "scripts": {
     "build:fixtures": "node scripts/build-fixtures.mjs",
     "test": "node scripts/build-fixtures.mjs && playwright test",
@@ -18,7 +18,7 @@
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "react-router": "^8.0.1",
-    "rr-lingui": "workspace:*"
+    "lingui-rr": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

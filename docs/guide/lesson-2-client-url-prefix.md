@@ -1,6 +1,6 @@
 # Lesson 2: Client with URL-Prefix Routing (SPA)
 
-In this lesson, you will learn how to configure `rr-lingui` for a **Client-Only / SPA** application (`server: false`) that still represents locales in the URL paths.
+In this lesson, you will learn how to configure `lingui-rr` for a **Client-Only / SPA** application (`server: false`) that still represents locales in the URL paths.
 
 ---
 
@@ -14,7 +14,7 @@ import {
   createLinguiRouter,
   clientDetectors,
   clientPersistence,
-} from 'rr-lingui'
+} from 'lingui-rr'
 
 export const localeMetadata = {
   ar: { label: 'العربية', dir: 'rtl' },
@@ -52,10 +52,10 @@ export const i18n = createLinguiRouter({
 ```
 
 ::: warning Validation Error
-If you accidentally supply a server detector (like `serverDetectors.acceptLanguage()`) to a router configured with `server: false`, `rr-lingui` will throw a config validation error on start:
+If you accidentally supply a server detector (like `serverDetectors.acceptLanguage()`) to a router configured with `server: false`, `lingui-rr` will throw a config validation error on start:
 
 ```txt
-[rr-lingui] config.detection: server: false configs can only use client detectors, got a "server" detector.
+[lingui-rr] config.detection: server: false configs can only use client detectors, got a "server" detector.
 ```
 :::
 
@@ -74,7 +74,7 @@ import {
   createLinguiRootLoader, // [!code focus]
   createLinguiShouldRevalidate, // [!code focus]
   LinguiRouterProvider, // [!code focus]
-} from 'rr-lingui'
+} from 'lingui-rr'
 import {
   Links,
   Meta,
@@ -140,4 +140,4 @@ React Router defines distinct result types for these two hooks:
 * **Server Middleware**: Expects to return or receive a standard web `Response` object.
 * **Client Middleware**: Receives and returns a record of route strategical results (`Record<string, DataStrategyResult>`).
 
-Because these types are strictly invariant, `rr-lingui` provides separate factories. Under the hood, they share the same router logic, but `createLinguiClientMiddleware` handles redirects by throwing a React Router client navigation error, enabling smooth client-side redirects during path resolution.
+Because these types are strictly invariant, `lingui-rr` provides separate factories. Under the hood, they share the same router logic, but `createLinguiClientMiddleware` handles redirects by throwing a React Router client navigation error, enabling smooth client-side redirects during path resolution.

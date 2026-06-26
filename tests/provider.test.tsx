@@ -61,7 +61,7 @@ describe('locale metadata helpers', () => {
 
 describe('provider wires real Lingui catalogs for translation', () => {
   const messages = {
-    'app.title': 'rr-lingui',
+    'app.title': 'lingui-rr',
     'nav.about': 'About',
   }
   const baseState: LinguiState = {
@@ -85,7 +85,7 @@ describe('provider wires real Lingui catalogs for translation', () => {
       </LinguiRouterProvider>,
     )
 
-    expect(html.replaceAll(/<!-- -->/g, '')).toContain('rr-lingui|About')
+    expect(html.replaceAll(/<!-- -->/g, '')).toContain('lingui-rr|About')
   })
 
   it('reloads the i18n instance when the locale/messages change', () => {
@@ -102,7 +102,7 @@ describe('provider wires real Lingui catalogs for translation', () => {
         <Probe />
       </LinguiRouterProvider>,
     )
-    expect(lastRender).toBe('rr-lingui')
+    expect(lastRender).toBe('lingui-rr')
 
     // Second render with Arabic messages swapped in.
     renderToString(

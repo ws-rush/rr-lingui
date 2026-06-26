@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "rr-lingui"
+  name: "lingui-rr"
   text: "React Router v8 integration for Lingui"
   tagline: "Isomorphic BCP-47 routing, cookie and header locale detection, and type-safe integration for React Router framework mode."
   actions:
@@ -14,7 +14,7 @@ hero:
       link: /reference/api
     - theme: alt
       text: GitHub
-      link: https://github.com/ws-rush/rr-lingui
+      link: https://github.com/ws-rush/lingui-rr
 
 features:
   - icon: 🌐

@@ -1,6 +1,6 @@
-# Contributing to `rr-lingui`
+# Contributing to `lingui-rr`
 
-Thank you for your interest in contributing to `rr-lingui`! This guide will help you get set up locally and walk you through our development and publishing workflows.
+Thank you for your interest in contributing to `lingui-rr`! This guide will help you get set up locally and walk you through our development and publishing workflows.
 
 ---
 
@@ -40,10 +40,10 @@ During development, you can run the following validation scripts:
 * **E2E Integration Tests**: Run E2E tests under `/e2e` using Playwright.
   ```bash
   # Install Playwright browsers (first-time setup)
-  pnpm --filter @rr-lingui/e2e install-browsers
+  pnpm --filter @lingui-rr/e2e install-browsers
   
   # Run the E2E tests
-  pnpm --filter @rr-lingui/e2e test
+  pnpm --filter @lingui-rr/e2e test
   ```
 
 ---

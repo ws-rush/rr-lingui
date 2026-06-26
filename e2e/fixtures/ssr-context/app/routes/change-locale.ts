@@ -1,4 +1,4 @@
-import { createLocaleAction } from 'rr-lingui'
+import { createLocaleAction } from 'lingui-rr'
 import { i18n } from '../lib/i18n'
 
 export const action = createLocaleAction(i18n)

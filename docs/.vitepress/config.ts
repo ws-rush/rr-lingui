@@ -1,13 +1,13 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: 'rr-lingui',
+  title: 'lingui-rr',
   description: 'React Router framework-mode integration for Lingui',
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/introduction' },
       { text: 'Reference', link: '/reference/configuration' },
-      { text: 'GitHub', link: 'https://github.com/ws-rush/rr-lingui' }
+      { text: 'GitHub', link: 'https://github.com/ws-rush/lingui-rr' }
     ],
     sidebar: {
       '/guide/': [
@@ -40,7 +40,7 @@ export default defineConfig({
       ]
     },
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/ws-rush/rr-lingui' }
+      { icon: 'github', link: 'https://github.com/ws-rush/lingui-rr' }
     ],
     search: {
       provider: 'local'

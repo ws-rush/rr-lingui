@@ -1,6 +1,6 @@
 # Configuration Reference
 
-The behavior of `rr-lingui` is governed by the `createLinguiRouter()` configuration object. Below is a detailed reference of all configuration properties.
+The behavior of `lingui-rr` is governed by the `createLinguiRouter()` configuration object. Below is a detailed reference of all configuration properties.
 
 ---
 
@@ -116,7 +116,7 @@ If you want to save the user's language selection inside an existing session coo
 
 ```ts
 import { createCookieSessionStorage } from 'react-router'
-import { serverPersistence } from 'rr-lingui'
+import { serverPersistence } from 'lingui-rr'
 
 const sessionStorage = createCookieSessionStorage({
   cookie: { name: 'session', secrets: ['s3cret1'] }

@@ -1,6 +1,6 @@
 # Lesson 4: Client with Context Mode (SPA)
 
-In this lesson, you will learn how to configure `rr-lingui` for a **Client-Only / SPA** application (`server: false`) that keeps clean URLs (`mode: 'context'`) and stores the language selection in the browser (e.g. `localStorage` or cookies).
+In this lesson, you will learn how to configure `lingui-rr` for a **Client-Only / SPA** application (`server: false`) that keeps clean URLs (`mode: 'context'`) and stores the language selection in the browser (e.g. `localStorage` or cookies).
 
 ---
 
@@ -14,7 +14,7 @@ import {
   createLinguiRouter,
   clientDetectors,
   clientPersistence,
-} from 'rr-lingui'
+} from 'lingui-rr'
 
 export const locales = ['en', 'ar']
 export const defaultLocale = 'en'
@@ -54,7 +54,7 @@ import {
   createLinguiRootLoader, // [!code focus]
   createLinguiShouldRevalidate, // [!code focus]
   LinguiRouterProvider, // [!code focus]
-} from 'rr-lingui'
+} from 'lingui-rr'
 import {
   Links,
   Meta,

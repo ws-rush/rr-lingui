@@ -15,7 +15,7 @@ export const dirText = (page: Page): Locator => page.getByTestId('dir')
 export async function assertEnglish(page: Page) {
   await page.waitForSelector('[data-testid=greeting]')
   const text = await greeting(page).textContent()
-  if (text !== 'Hello from rr-lingui') {
+  if (text !== 'Hello from lingui-rr') {
     throw new Error(`expected English greeting, got: ${text}`)
   }
   await assertHtmlAttrs(page, 'en', 'ltr')
@@ -25,7 +25,7 @@ export async function assertEnglish(page: Page) {
 export async function assertArabic(page: Page) {
   await page.waitForSelector('[data-testid=greeting]')
   const text = await greeting(page).textContent()
-  if (text !== 'مرحبا من rr-lingui') {
+  if (text !== 'مرحبا من lingui-rr') {
     throw new Error(`expected Arabic greeting, got: ${text}`)
   }
   await assertHtmlAttrs(page, 'ar', 'rtl')

@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Form, useLocation } from 'react-router'
-import { useLinguiRouter } from 'rr-lingui'
+import { useLinguiRouter } from 'lingui-rr'
 
 export default function Home() {
   const { _ } = useLingui()

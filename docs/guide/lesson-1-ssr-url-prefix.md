@@ -1,6 +1,6 @@
 # Lesson 1: SSR with URL-Prefix Routing
 
-In this lesson, you will learn how to configure `rr-lingui` for a **Server-Side Rendered (SSR)** application that represents locales in the URL path (e.g. `/about` vs `/en/about`). We will hide the prefix for the default locale (`ar`).
+In this lesson, you will learn how to configure `lingui-rr` for a **Server-Side Rendered (SSR)** application that represents locales in the URL path (e.g. `/about` vs `/en/about`). We will hide the prefix for the default locale (`ar`).
 
 ---
 
@@ -14,7 +14,7 @@ import {
   createLinguiRouter,
   serverDetectors,
   serverPersistence,
-} from 'rr-lingui'
+} from 'lingui-rr'
 
 export const localeMetadata = {
   ar: { label: 'العربية', dir: 'rtl' },
@@ -64,7 +64,7 @@ import {
   createLinguiRootLoader, // [!code focus]
   createLinguiShouldRevalidate, // [!code focus]
   LinguiRouterProvider, // [!code focus]
-} from 'rr-lingui'
+} from 'lingui-rr'
 import {
   Links,
   Meta,
@@ -154,7 +154,7 @@ Create an action route file at `app/routes/change-locale.ts`. This endpoint acce
 
 ```ts
 // app/routes/change-locale.ts
-import { createLocaleAction } from 'rr-lingui'
+import { createLocaleAction } from 'lingui-rr'
 import { i18n } from '@/lib/i18n'
 
 export const action = createLocaleAction(i18n)
@@ -165,7 +165,7 @@ In your frontend component, trigger this action using a form submission:
 ```tsx
 // app/components/LocaleButton.tsx
 import { Form, useLocation } from 'react-router'
-import { useLinguiRouter } from 'rr-lingui'
+import { useLinguiRouter } from 'lingui-rr'
 
 export function LocaleButton() {
   const location = useLocation()
@@ -205,7 +205,7 @@ When you need to construct an absolute link to a specific language, use `rewrite
 
 ```tsx
 import { Link } from 'react-router'
-import { rewriteLocalePath, useLinguiRouter } from 'rr-lingui'
+import { rewriteLocalePath, useLinguiRouter } from 'lingui-rr'
 import { defaultLocale } from '~/lib/i18n'
 
 export function LinkToEnglish({ to }: { to: string }) {

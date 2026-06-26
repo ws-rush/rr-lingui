@@ -1,4 +1,4 @@
-# CI verification for the rr-lingui library.
+# CI verification for the lingui-rr library.
 #
 # Runs validation checks on every push to main and on every pull request,
 # including typechecking, unit testing, compiling the library, and running
@@ -16,32 +16,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  rr-lingui-typecheck:
-    name: rr-lingui typecheck
+  lingui-rr-typecheck:
+    name: lingui-rr typecheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
       - run: pnpm typecheck
 
-  rr-lingui-test:
-    name: rr-lingui test
+  lingui-rr-test:
+    name: lingui-rr test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
       - run: pnpm test
 
-  rr-lingui-build:
-    name: rr-lingui build
+  lingui-rr-build:
+    name: lingui-rr build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
       - run: pnpm build
 
-  rr-lingui-e2e:
-    name: rr-lingui E2E tests
+  lingui-rr-e2e:
+    name: lingui-rr E2E tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -54,6 +54,6 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('e2e/package.json') }}
       - name: Install Playwright browsers (if not cached)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm --filter @rr-lingui/e2e install-browsers
+        run: pnpm --filter @lingui-rr/e2e install-browsers
       - name: Run E2E Tests
         run: pnpm test:e2e

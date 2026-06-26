@@ -59,11 +59,11 @@ async function readCatalogMessages(loader: CatalogLoader, locale: string): Promi
   try {
     mod = await loader()
   } catch (cause) {
-    throw new Error(`[rr-lingui] Failed to load catalog for locale "${locale}".`, { cause })
+    throw new Error(`[lingui-rr] Failed to load catalog for locale "${locale}".`, { cause })
   }
 
   if (mod == null || typeof mod !== 'object') {
-    throw new Error(`[rr-lingui] Catalog for locale "${locale}" resolved to ${describeCatalogShape(mod)}. Expected a module with a "messages" export (e.g. { messages: { ... } }) or a raw messages record.`)
+    throw new Error(`[lingui-rr] Catalog for locale "${locale}" resolved to ${describeCatalogShape(mod)}. Expected a module with a "messages" export (e.g. { messages: { ... } }) or a raw messages record.`)
   }
 
   let unwrapped = mod
@@ -92,7 +92,7 @@ async function readCatalogMessages(loader: CatalogLoader, locale: string): Promi
   }
 
   if (messages == null || typeof messages !== 'object' || Array.isArray(messages)) {
-    throw new Error(`[rr-lingui] Catalog for locale "${locale}" did not contain usable messages. Expected a module with a "messages" export (e.g. { messages: { ... } }) or a raw messages record, got ${describeCatalogShape(mod)}.`)
+    throw new Error(`[lingui-rr] Catalog for locale "${locale}" did not contain usable messages. Expected a module with a "messages" export (e.g. { messages: { ... } }) or a raw messages record, got ${describeCatalogShape(mod)}.`)
   }
 
   return messages as Messages

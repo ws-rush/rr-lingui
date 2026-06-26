@@ -1,5 +1,5 @@
 // Auto-generated fixture. SSR (server: true), mode: url-prefix.
-import { createLinguiRouter, serverDetectors, serverPersistence } from 'rr-lingui'
+import { createLinguiRouter, serverDetectors, serverPersistence } from 'lingui-rr'
 
 export const defaultLocale = 'en'
 
@@ -16,7 +16,7 @@ export const i18n = createLinguiRouter({
   persistence: [serverPersistence.cookie('locale')],
     ignorePaths: [/^\/assets\//, /^\/api\//, /^\/change-locale(?:\.data)?$/],
   catalogs: {
-      en: async () => ({ messages: { greeting: 'Hello from rr-lingui' } }),
-      ar: async () => ({ messages: { greeting: 'مرحبا من rr-lingui' } }),
+      en: async () => ({ messages: { greeting: 'Hello from lingui-rr' } }),
+      ar: async () => ({ messages: { greeting: 'مرحبا من lingui-rr' } }),
   },
 })

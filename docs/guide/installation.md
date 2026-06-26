@@ -1,6 +1,6 @@
 # Installation & Setup
 
-To get started, you'll need to install `rr-lingui` along with its peer dependencies: Lingui core/react packages and the required build-time tooling.
+To get started, you'll need to install `lingui-rr` along with its peer dependencies: Lingui core/react packages and the required build-time tooling.
 
 ## 1. Install Dependencies
 
@@ -9,17 +9,17 @@ Use your package manager to install the packages:
 ::: code-group
 
 ```sh [pnpm]
-pnpm add rr-lingui @lingui/core @lingui/react
+pnpm add lingui-rr @lingui/core @lingui/react
 pnpm add -D @lingui/cli @lingui/conf @lingui/vite-plugin @lingui/format-po
 ```
 
 ```sh [npm]
-npm install rr-lingui @lingui/core @lingui/react
+npm install lingui-rr @lingui/core @lingui/react
 npm install --save-dev @lingui/cli @lingui/conf @lingui/vite-plugin @lingui/format-po
 ```
 
 ```sh [yarn]
-yarn add rr-lingui @lingui/core @lingui/react
+yarn add lingui-rr @lingui/core @lingui/react
 yarn add --dev @lingui/cli @lingui/conf @lingui/vite-plugin @lingui/format-po
 ```
 

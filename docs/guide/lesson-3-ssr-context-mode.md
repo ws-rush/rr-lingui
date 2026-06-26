@@ -1,6 +1,6 @@
 # Lesson 3: SSR with Context Mode
 
-In this lesson, you will learn how to configure `rr-lingui` for a **Server-Side Rendered (SSR)** application where the locale is stored in state (like a cookie or session) instead of being prefixed in the URL paths. Under this configuration, `/about` stays `/about` regardless of the language.
+In this lesson, you will learn how to configure `lingui-rr` for a **Server-Side Rendered (SSR)** application where the locale is stored in state (like a cookie or session) instead of being prefixed in the URL paths. Under this configuration, `/about` stays `/about` regardless of the language.
 
 ---
 
@@ -14,7 +14,7 @@ import {
   createLinguiRouter,
   serverDetectors,
   serverPersistence,
-} from 'rr-lingui'
+} from 'lingui-rr'
 
 export const locales = ['en', 'ar']
 export const defaultLocale = 'en'
@@ -55,7 +55,7 @@ import {
   createLinguiRootLoader, // [!code focus]
   createLinguiShouldRevalidate, // [!code focus]
   LinguiRouterProvider, // [!code focus]
-} from 'rr-lingui'
+} from 'lingui-rr'
 import {
   Links,
   Meta,
@@ -121,7 +121,7 @@ React Router's default behavior skips loader execution for the current page when
 2. The user remains on the same page.
 3. **Without a custom revalidator, the root loader will not run, and the page will continue rendering in the old language until a hard refresh.**
 
-By exporting `shouldRevalidate` wired with `createLinguiShouldRevalidate(i18n)`, `rr-lingui` forces a revalidation of the root loader whenever:
+By exporting `shouldRevalidate` wired with `createLinguiShouldRevalidate(i18n)`, `lingui-rr` forces a revalidation of the root loader whenever:
 * A submission is sent to the locale-switching action route (default `/change-locale`).
 * The pathname changes.
 

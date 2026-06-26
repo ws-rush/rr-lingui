@@ -1,17 +1,17 @@
 {
-  "name": "rr-lingui",
+  "name": "lingui-rr",
   "version": "0.1.0",
   "description": "React Router v8 framework-mode integration for Lingui.",
   "type": "module",
   "license": "MIT",
   "author": "ws-rush",
-  "homepage": "https://github.com/ws-rush/rr-lingui#readme",
+  "homepage": "https://github.com/ws-rush/lingui-rr#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ws-rush/rr-lingui.git"
+    "url": "git+https://github.com/ws-rush/lingui-rr.git"
   },
   "bugs": {
-    "url": "https://github.com/ws-rush/rr-lingui/issues"
+    "url": "https://github.com/ws-rush/lingui-rr/issues"
   },
   "sideEffects": false,
   "main": "./dist/index.js",
@@ -30,7 +30,7 @@
   ],
   "scripts": {
     "test": "vitest run --dir tests",
-    "test:e2e": "pnpm build && pnpm pack && rm -rf e2e/node_modules/rr-lingui && mkdir -p e2e/node_modules/rr-lingui && tar -xzf rr-lingui-*.tgz -C e2e/node_modules/rr-lingui --strip-components=1 && rm -f rr-lingui-*.tgz && pnpm --filter @rr-lingui/e2e test",
+    "test:e2e": "pnpm build && pnpm pack && rm -rf e2e/node_modules/lingui-rr && mkdir -p e2e/node_modules/lingui-rr && tar -xzf lingui-rr-*.tgz -C e2e/node_modules/lingui-rr --strip-components=1 && rm -f lingui-rr-*.tgz && pnpm --filter @lingui-rr/e2e test",
     "test:all": "pnpm test && pnpm test:e2e",
     "typecheck": "tsc --noEmit",
     "build": "rm -rf dist && vite build",

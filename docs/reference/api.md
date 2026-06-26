@@ -1,6 +1,6 @@
 # API Reference
 
-This page contains the signatures, parameters, and descriptions for all exported functions and hooks in `rr-lingui`.
+This page contains the signatures, parameters, and descriptions for all exported functions and hooks in `lingui-rr`.
 
 ---
 

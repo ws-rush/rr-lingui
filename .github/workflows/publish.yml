@@ -34,4 +34,4 @@ jobs:
       - name: Publish package
         run: |
           pnpm pack
-          npm publish rr-lingui-*.tgz --provenance
+          npm publish lingui-rr-*.tgz --provenance

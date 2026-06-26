@@ -1,6 +1,6 @@
 # E2E tests
 
-Playwright end-to-end tests for `rr-lingui` across **all four configurations**.
+Playwright end-to-end tests for `lingui-rr` across **all four configurations**.
 Each config runs as its own React Router dev server (one `E2E_CONFIG` + port per
 config) and is driven by a dedicated Playwright project. This catches anything
 that breaks the library in a real browser — middleware redirects, catalog
@@ -31,15 +31,15 @@ one Playwright project to each, so all four run independently and in parallel.
 ```sh
 # from the repo root
 pnpm install
-pnpm --filter rr-lingui build                 # e2e imports the built package
-pnpm --filter @rr-lingui/e2e install-browsers # one-time: chromium
-pnpm --filter @rr-lingui/e2e test
+pnpm --filter lingui-rr build                 # e2e imports the built package
+pnpm --filter @lingui-rr/e2e install-browsers # one-time: chromium
+pnpm --filter @lingui-rr/e2e test
 ```
 
 To run a single config:
 
 ```sh
-pnpm --filter @rr-lingui/e2e exec playwright test --project=ssr-url-prefix
+pnpm --filter @lingui-rr/e2e exec playwright test --project=ssr-url-prefix
 ```
 
 Dev servers are reused between runs locally (`reuseExistingServer`). On CI they
@@ -47,6 +47,6 @@ are started fresh per run.
 
 ## CI
 
-GitHub Actions runs the full matrix after building `rr-lingui` (see
+GitHub Actions runs the full matrix after building `lingui-rr` (see
 `/.github/workflows/verify.yml`, job `e2e`). The e2e job installs Playwright's
 chromium and runs all four projects.

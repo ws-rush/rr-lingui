@@ -322,6 +322,13 @@ describe('URL prefix rewrite', () => {
       }),
     ).toBe('/healthcheck')
   })
+
+  it('treats global RegExp ignorePaths deterministically across repeated calls', () => {
+    const ignorePaths = [/^\/api\//g]
+
+    expect(rewriteLocalePath('/api/users', 'ar', ['en', 'ar'], { ignorePaths })).toBe('/api/users')
+    expect(rewriteLocalePath('/api/users', 'ar', ['en', 'ar'], { ignorePaths })).toBe('/api/users')
+  })
 })
 
 describe('detectors and persistence', () => {
@@ -329,6 +336,20 @@ describe('detectors and persistence', () => {
     const locale = await runDetectors(
       [
         { kind: 'server', detect: async () => null },
+        { kind: 'server', detect: async () => 'ar' },
+      ],
+      { request: new Request('https://example.com') },
+      ['en', 'ar'],
+      'en',
+    )
+
+    expect(locale).toBe('ar')
+  })
+
+  it('continues to later detectors when an earlier detector returns an unsupported locale', async () => {
+    const locale = await runDetectors(
+      [
+        { kind: 'server', detect: async () => 'fr' },
         { kind: 'server', detect: async () => 'ar' },
       ],
       { request: new Request('https://example.com') },
@@ -369,6 +390,10 @@ describe('cookie parsing', () => {
   it('unwraps double-quoted cookie values', () => {
     expect(parseCookie('locale="en"', 'locale')).toBe('en')
     expect(parseCookie('locale="en-US"', 'locale')).toBe('en-US')
+  })
+
+  it('ignores malformed percent-encoded cookie values instead of throwing', () => {
+    expect(parseCookie('locale=%E0%A4%A; theme=dark', 'locale')).toBeNull()
   })
 })
 

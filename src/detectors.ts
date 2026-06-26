@@ -9,7 +9,9 @@ export async function runDetectors(
 ): Promise<string> {
   for (const detector of detectors) {
     const detected = await detector.detect(ctx as never)
-    if (detected) return matchSupportedLocale(detected, supportedLocales, fallbackLocale)
+    if (!detected) continue
+    const matched = matchSupportedLocale(detected, supportedLocales, '')
+    if (matched) return matched
   }
   return fallbackLocale
 }

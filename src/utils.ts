@@ -48,7 +48,11 @@ export function parseCookie(header: string | null, name: string): string | null 
       if (value.startsWith('"') && value.endsWith('"')) {
         value = value.slice(1, -1)
       }
-      return decodeURIComponent(value)
+      try {
+        return decodeURIComponent(value)
+      } catch {
+        return null
+      }
     }
   }
   return null

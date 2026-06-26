@@ -91,4 +91,4 @@ Full documentation is hosted at **[lingui-rr.wusaby.com](https://lingui-rr.wusab
 
 ## Support Palestine 🇵🇸
 
-We stand in solidarity with the people of Palestine. We condemn the ongoing genocide, military occupation, and humanitarian catastrophe. Learn more and find resources documenting the situation at [stand-with-palestine.org](https://stand-with-palestine.org).
+We stand in solidarity with the people of Palestine. We condemn the ongoing genocide, military occupation, and humanitarian catastrophe. Learn more and find resources documenting the situation at [stand-with-palestine.org](https://stand-with-palestine.org) and the names of the victims at [visualizingpalestine.org](https://visualizingpalestine.org/gaza-names/en.html).

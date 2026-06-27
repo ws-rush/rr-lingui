@@ -38,6 +38,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+.pnpm-store/
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -124,6 +125,8 @@ dist/
 # Playwright
 /playwright-report/
 /test-results/
+e2e/test-results/
+e2e/fixtures/
 
 # Editor / System files
 .vscode/

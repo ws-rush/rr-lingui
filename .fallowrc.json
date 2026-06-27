@@ -1,0 +1,17 @@
+{
+  "ignoreDependencies": [
+    "@lingui/core",
+    "@lingui/react",
+    "isbot",
+    "lingui-rr",
+    "react",
+    "react-router",
+    "vue"
+  ],
+  "duplicates": {
+    "ignore": ["tests/**", "e2e/**"]
+  },
+  "health": {
+    "ignore": ["tests/**", "e2e/**"]
+  }
+}

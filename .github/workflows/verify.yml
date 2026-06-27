@@ -1,8 +1,8 @@
 # CI verification for the lingui-rr library.
 #
 # Runs validation checks on every push to main and on every pull request,
-# including typechecking, unit testing, compiling the library, and running
-# the integration E2E Playwright tests.
+# including linting, format checks, fallow audits, typechecking, unit testing,
+# compiling the library, and running the integration E2E Playwright tests.
 name: verify
 
 on:
@@ -16,6 +16,55 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lingui-rr-lint:
+    name: lingui-rr lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm lint
+
+  lingui-rr-format:
+    name: lingui-rr format check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm format:check
+
+  lingui-rr-fallow:
+    name: lingui-rr fallow audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-pnpm
+      - name: Ensure git is available
+        run: |
+          if ! command -v git >/dev/null 2>&1; then
+            if command -v sudo >/dev/null 2>&1; then
+              sudo apt-get update
+              sudo apt-get install -y git
+            else
+              apt-get update
+              apt-get install -y git
+            fi
+          fi
+      - name: Run fallow audit
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BASE_SHA: ${{ github.event.before }}
+        run: |
+          if [ -n "$PR_BASE_SHA" ]; then
+            BASE="$PR_BASE_SHA"
+          elif [ -n "$PUSH_BASE_SHA" ] && [ "$PUSH_BASE_SHA" != "0000000000000000000000000000000000000000" ]; then
+            BASE="$PUSH_BASE_SHA"
+          else
+            BASE="origin/main"
+          fi
+          pnpm exec fallow audit --base "$BASE"
+
   lingui-rr-typecheck:
     name: lingui-rr typecheck
     runs-on: ubuntu-latest

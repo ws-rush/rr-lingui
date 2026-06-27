@@ -7,73 +7,88 @@ This page contains the signatures, parameters, and descriptions for all exported
 ## Core Factories
 
 ### `createLinguiRouter`
+
 Instantiates a Lingui-React Router integration router.
 
 ```ts
 function createLinguiRouter(config: LinguiRouterConfig): LinguiRouterInstance
 ```
-* **Parameters**: `config` (see [Configuration Reference](./configuration)).
-* **Returns**: A router instance used by the middleware, loaders, and actions. Do not consume this instance directly in UI rendering; access it via hooks.
+
+- **Parameters**: `config` (see [Configuration Reference](./configuration)).
+- **Returns**: A router instance used by the middleware, loaders, and actions. Do not consume this instance directly in UI rendering; access it via hooks.
 
 ---
 
 ## Route Middleware & Loaders
 
 ### `createLinguiMiddleware`
+
 Creates a server-side middleware function to run in the root route's `middleware` pipeline. Only valid when `server: true`.
 
 ```ts
-function createLinguiMiddleware(router: LinguiRouterInstance): MiddlewareFunction
+function createLinguiMiddleware(
+  router: LinguiRouterInstance,
+): MiddlewareFunction
 ```
 
 ### `createLinguiClientMiddleware`
+
 Creates a client-side middleware function for client-only / SPA builds. Only valid when `server: false`.
 
 ```ts
-function createLinguiClientMiddleware(router: LinguiRouterInstance): ClientMiddlewareFunction
+function createLinguiClientMiddleware(
+  router: LinguiRouterInstance,
+): ClientMiddlewareFunction
 ```
 
 ### `createLinguiRootLoader`
+
 Creates the root route loader function. It extracts the detected locale, imports the corresponding translation catalog, and returns a serializable state tree.
 
 ```ts
 function createLinguiRootLoader(router: LinguiRouterInstance): LoaderFunction
 ```
-* **Returns**: A loader function. In your route files, type your layout hook as `useLoaderData<typeof loader>()` or `useRouteLoaderData<typeof loader>('root')` to resolve to the type-safe `LinguiState` shape.
+
+- **Returns**: A loader function. In your route files, type your layout hook as `useLoaderData<typeof loader>()` or `useRouteLoaderData<typeof loader>('root')` to resolve to the type-safe `LinguiState` shape.
 
 ---
 
 ## Actions & Optional Revalidation
 
 ### `createLocaleAction`
+
 Creates an action route handler to process locale updates.
 
 ```ts
 function createLocaleAction(router: LinguiRouterInstance): ActionFunction
 ```
-* **Expected Request Payload**:
-  * `locale`: The code of the target locale to switch to.
-  * `redirectTo`: The path to redirect to after persisting the selection.
-* **Returns**: A response directing the browser to the redirected path with updated cookie/session headers.
+
+- **Expected Request Payload**:
+  - `locale`: The code of the target locale to switch to.
+  - `redirectTo`: The path to redirect to after persisting the selection.
+- **Returns**: A response directing the browser to the redirected path with updated cookie/session headers.
 
 ### `createLinguiShouldRevalidate`
+
 Creates an optional React Router `shouldRevalidate` guardrail for locale-switch submissions.
 
 ```ts
 function createLinguiShouldRevalidate(
   router: LinguiRouterInstance,
-  options?: { actionPath?: string }
+  options?: { actionPath?: string },
 ): ShouldRevalidateFunction
 ```
-* **Options**:
-  * `actionPath`: The route path of your locale action (defaults to `"/change-locale"`).
-* **Behavior**: Most React Router v8 apps do not need to export this helper because action submissions revalidate by default. If you do export it, it returns `true` when a submission is sent to `actionPath`, even if that submission redirects back to the same URL. All other navigations and submissions defer to React Router's `defaultShouldRevalidate`, so v8 call-site controls like `<Form defaultShouldRevalidate={false}>`, `<Link defaultShouldRevalidate={false}>`, `useSubmit(...)`, and `fetcher.submit(...)` continue to work.
+
+- **Options**:
+  - `actionPath`: The route path of your locale action (defaults to `"/change-locale"`).
+- **Behavior**: Most React Router v8 apps do not need to export this helper because action submissions revalidate by default. If you do export it, it returns `true` when a submission is sent to `actionPath`, even if that submission redirects back to the same URL. All other navigations and submissions defer to React Router's `defaultShouldRevalidate`, so v8 call-site controls like `<Form defaultShouldRevalidate={false}>`, `<Link defaultShouldRevalidate={false}>`, `useSubmit(...)`, and `fetcher.submit(...)` continue to work.
 
 ---
 
 ## React Providers & Hooks
 
 ### `LinguiRouterProvider`
+
 Hydrates the client-side Lingui provider with translation catalogs and configures the active locale context. Wrap your root layout component with this provider.
 
 ```tsx
@@ -82,11 +97,13 @@ function LinguiRouterProvider(props: {
   children: React.ReactNode
 }): React.JSX.Element
 ```
-* **Props**:
-  * `state`: The serialized Lingui state returned from your root loader (type `LinguiState`).
-  * `children`: Component subtree that needs access to translation context and macros (e.g. `<Trans>`).
+
+- **Props**:
+  - `state`: The serialized Lingui state returned from your root loader (type `LinguiState`).
+  - `children`: Component subtree that needs access to translation context and macros (e.g. `<Trans>`).
 
 ### `useLinguiRouter`
+
 Reads active localization metadata and routing parameters. Must be invoked within a component wrapped by `LinguiRouterProvider`.
 
 ```ts
@@ -104,6 +121,7 @@ function useLinguiRouter(): {
 ## Path Rewriting & Utilities
 
 ### `rewriteLocalePath`
+
 Pure function that rewrites absolute URL paths to target a specific locale prefix.
 
 ```ts
@@ -115,43 +133,53 @@ function rewriteLocalePath(
     defaultLocale?: string
     prefixDefaultLocale?: boolean
     ignorePaths?: Array<RegExp | string>
-  }
+  },
 ): string
 ```
-* **Parameters**:
-  * `path`: Absolute URL path (e.g. `/dashboard?tab=1#main`).
-  * `targetLocale`: The locale to apply to the prefix (matched case-insensitively).
-  * `supportedLocales`: Array of configured locale codes.
-  * `options`: If omitting the prefix for the default locale, supply `defaultLocale` and set `prefixDefaultLocale: false`. If a path matches `ignorePaths`, it is returned unchanged.
+
+- **Parameters**:
+  - `path`: Absolute URL path (e.g. `/dashboard?tab=1#main`).
+  - `targetLocale`: The locale to apply to the prefix (matched case-insensitively).
+  - `supportedLocales`: Array of configured locale codes.
+  - `options`: If omitting the prefix for the default locale, supply `defaultLocale` and set `prefixDefaultLocale: false`. If a path matches `ignorePaths`, it is returned unchanged.
 
 ```ts
 rewriteLocalePath('/about', 'en', ['en', 'ar']) // "/en/about"
-rewriteLocalePath('/en/about', 'ar', ['en', 'ar'], { defaultLocale: 'ar', prefixDefaultLocale: false }) // "/about"
+rewriteLocalePath('/en/about', 'ar', ['en', 'ar'], {
+  defaultLocale: 'ar',
+  prefixDefaultLocale: false,
+}) // "/about"
 ```
 
 ### `getHtmlAttrs`
+
 Generates lang/direction attributes for a specific locale.
+
 ```ts
 function getHtmlAttrs(
   locale: string | LocaleMeta,
-  locales?: readonly LocaleMeta[]
+  locales?: readonly LocaleMeta[],
 ): { lang: string; dir: 'ltr' | 'rtl' | 'auto' }
 ```
 
 ### `getLocaleDir`
+
 Resolves the rendering direction for a locale.
+
 ```ts
 function getLocaleDir(
   locale: string | LocaleMeta,
-  locales?: readonly LocaleMeta[]
+  locales?: readonly LocaleMeta[],
 ): 'ltr' | 'rtl' | 'auto'
 ```
 
 ### `getLocaleLabel`
+
 Resolves the human-readable label of a locale.
+
 ```ts
 function getLocaleLabel(
   locale: string | LocaleMeta,
-  locales?: readonly LocaleMeta[]
+  locales?: readonly LocaleMeta[],
 ): string
 ```

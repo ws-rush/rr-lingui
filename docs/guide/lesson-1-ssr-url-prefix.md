@@ -86,7 +86,8 @@ export function Layout({ children }: { readonly children: React.ReactNode }) {
 
   return (
     <html
-      {...(lingui?.htmlAttrs ?? { // [!code focus]
+      {...(lingui?.htmlAttrs ?? {
+        // [!code focus]
         lang: defaultLocaleMeta.code, // [!code focus]
         dir: defaultLocaleMeta.dir, // [!code focus]
       })} // [!code focus]
@@ -111,7 +112,7 @@ export default function App() {
   const lingui = useLoaderData<typeof loader>() // [!code focus]
 
   return (
-    <LinguiRouterProvider state={lingui}/* [!code focus] */>
+    <LinguiRouterProvider state={lingui} /* [!code focus] */>
       <Outlet />
     </LinguiRouterProvider> // [!code focus]
   )
@@ -128,7 +129,13 @@ If you are using `@react-router/dev/routes` (React Router v8 config), construct 
 
 ```ts
 // app/routes.ts
-import { index, layout, prefix, route, type RouteConfig } from '@react-router/dev/routes'
+import {
+  index,
+  layout,
+  prefix,
+  route,
+  type RouteConfig,
+} from '@react-router/dev/routes'
 
 export default [
   // Optional language parameter wrap
@@ -196,7 +203,7 @@ import { Link } from 'react-router'
 
 // If current path is /en/dashboard, this links to /en/dashboard/settings
 // If current path is /dashboard, this links to /dashboard/settings
-<Link to="settings">Settings</Link>
+;<Link to="settings">Settings</Link>
 ```
 
 When you need to construct an absolute link to a specific language, use `rewriteLocalePath()`:
@@ -208,11 +215,16 @@ import { defaultLocale } from '~/lib/i18n'
 
 export function LinkToEnglish({ to }: { to: string }) {
   const { locales } = useLinguiRouter()
-  
-  const href = rewriteLocalePath(to, 'en', locales.map(l => l.code), {
-    defaultLocale,
-    prefixDefaultLocale: false
-  })
+
+  const href = rewriteLocalePath(
+    to,
+    'en',
+    locales.map((l) => l.code),
+    {
+      defaultLocale,
+      prefixDefaultLocale: false,
+    },
+  )
 
   return <Link to={href}>View page in English</Link>
 }

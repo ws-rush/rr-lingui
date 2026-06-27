@@ -26,14 +26,10 @@ export const i18n = createLinguiRouter({
   defaultLocale,
   detection: [
     clientDetectors.localStorage('locale'), // Detect from localStorage [!code hl]
-    clientDetectors.navigator(),            // Fallback to browser language
+    clientDetectors.navigator(), // Fallback to browser language
   ],
   persistence: [clientPersistence.localStorage('locale')], // Save to localStorage [!code hl]
-  ignorePaths: [
-    /^\/assets\//,
-    /^\/build\//,
-    /^\/favicon\.ico$/,
-  ],
+  ignorePaths: [/^\/assets\//, /^\/build\//, /^\/favicon\.ico$/],
   catalogs: {
     en: () => import('../locales/en.po'),
     ar: () => import('../locales/ar.po'),
@@ -66,7 +62,7 @@ import {
 import { i18n } from './lib/i18n'
 
 export const clientMiddleware = [createLinguiClientMiddleware(i18n)] // [!code focus] [!code hl]
-export const clientLoader = createLinguiRootLoader(i18n)             // [!code focus] [!code hl]
+export const clientLoader = createLinguiRootLoader(i18n) // [!code focus] [!code hl]
 
 export function Layout({ children }: { readonly children: React.ReactNode }) {
   const lingui = useRouteLoaderData<typeof clientLoader>('root') // [!code focus]
@@ -110,5 +106,6 @@ If you want the optional locale-action revalidation guardrail, add the same `cre
 ## Browser-Only vs. Isomorphic Storage
 
 In Lesson 2 and 4, we introduce two kinds of client-side storage:
+
 1. **Cookies (`clientPersistence.cookie`)**: These are isomorphic. In a React Router framework mode app, even with `server: false`, standard action forms can submit requests to server actions. Using cookies ensures that the browser-side storage is automatically mirrored via the `Set-Cookie` header during action redirects.
 2. **LocalStorage (`clientPersistence.localStorage`)**: This is pure browser-only storage. If your app is served statically (e.g. from static hostings with no server-side execution at all), `localStorage` is the ideal solution. It avoids cookie headers and maintains user state locally in the user's browser.

@@ -33,7 +33,11 @@ Define your router setup in a shared i18n file, including regional variations li
 
 ```ts
 // app/lib/i18n.ts
-import { createLinguiRouter, clientDetectors, clientPersistence } from 'lingui-rr'
+import {
+  createLinguiRouter,
+  clientDetectors,
+  clientPersistence,
+} from 'lingui-rr'
 
 export const i18n = createLinguiRouter({
   server: false,
@@ -58,7 +62,11 @@ Integrate into `app/root.tsx`:
 
 ```tsx
 // app/root.tsx
-import { createLinguiRootLoader, createLinguiClientMiddleware, LinguiRouterProvider } from 'lingui-rr'
+import {
+  createLinguiRootLoader,
+  createLinguiClientMiddleware,
+  LinguiRouterProvider,
+} from 'lingui-rr'
 import { Outlet, useLoaderData } from 'react-router'
 import { i18n } from './lib/i18n'
 

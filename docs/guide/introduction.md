@@ -26,6 +26,7 @@ To understand how `lingui-rr` works, it is best to trace the lifecycle of a user
 ```
 
 ### The Three Pillars:
+
 1. **Middleware (Detection & Pre-loading)**: Intercepts incoming requests early in the routing cycle. In URL-Prefix mode, it parses the path prefix (e.g. `/en/about` -> locale is `en`, target path is `/about`). In Context mode, it inspects cookies or headers. It then fetches/imports the appropriate language catalog before rendering starts.
 2. **Root Loader (Serialization & Handshake)**: Bridges the router state with the React component tree. Because React Router requires all loader data to be JSON-serializable, `lingui-rr` wraps loader data in a safe layout that preserves the catalog type definition, preventing React Router from widening complex compiled translation types.
 3. **Provider (Context & Hydration)**: Receives the serialized state and hydrates the client-side Lingui provider. Once wrapped in `LinguiRouterProvider`, standard components like the `<Trans>` macro can render translations immediately without hydration mismatches or page flashes.
@@ -54,9 +55,10 @@ Implementing robust internationalization in React Router (especially under frame
 
 `lingui-rr` supports two primary routing configurations:
 
-* **URL-Prefix Mode (`mode: 'url-prefix'`)**: The active locale is represented in the URL path (e.g., `/en/about` vs `/about`). Best for SEO.
-* **Context Mode (`mode: 'context'`)**: The URL remains clean (e.g., `/about`), and the locale is stored entirely in cookies, headers, or localStorage.
+- **URL-Prefix Mode (`mode: 'url-prefix'`)**: The active locale is represented in the URL path (e.g., `/en/about` vs `/about`). Best for SEO.
+- **Context Mode (`mode: 'context'`)**: The URL remains clean (e.g., `/about`), and the locale is stored entirely in cookies, headers, or localStorage.
 
 It also distinguishes between running environments:
-* **Server-Side Rendered (`server: true`)**: Relies on server-side detectors and persistence (headers, sessions).
-* **Client-Only / SPA (`server: false`)**: Relies on browser-based detectors (navigator, localStorage, document.cookie).
+
+- **Server-Side Rendered (`server: true`)**: Relies on server-side detectors and persistence (headers, sessions).
+- **Client-Only / SPA (`server: false`)**: Relies on browser-based detectors (navigator, localStorage, document.cookie).

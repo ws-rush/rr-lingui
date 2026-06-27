@@ -29,10 +29,7 @@ export const i18n = createLinguiRouter({
   locales: localeMetadata,
   defaultLocale,
   prefixDefaultLocale: false,
-  detection: [
-    clientDetectors.cookie('locale'),
-    clientDetectors.navigator(),
-  ],
+  detection: [clientDetectors.cookie('locale'), clientDetectors.navigator()],
   persistence: [clientPersistence.cookie('locale')],
   ignorePaths: [
     /^\/assets\//,
@@ -57,6 +54,7 @@ If you accidentally supply a server detector (like `serverDetectors.acceptLangua
 ```txt
 [lingui-rr] config.detection: server: false configs can only use client detectors, got a "server" detector.
 ```
+
 :::
 
 ---
@@ -96,7 +94,8 @@ export function Layout({ children }: { readonly children: React.ReactNode }) {
 
   return (
     <html
-      {...(lingui?.htmlAttrs ?? { // [!code focus]
+      {...(lingui?.htmlAttrs ?? {
+        // [!code focus]
         lang: defaultLocaleMeta.code, // [!code focus]
         dir: defaultLocaleMeta.dir, // [!code focus]
       })} // [!code focus]
@@ -135,7 +134,8 @@ export default function App() {
 You might wonder why we call `createLinguiClientMiddleware()` for client builds and `createLinguiMiddleware()` for server builds.
 
 React Router defines distinct result types for these two hooks:
-* **Server Middleware**: Expects to return or receive a standard web `Response` object.
-* **Client Middleware**: Receives and returns a record of route strategical results (`Record<string, DataStrategyResult>`).
+
+- **Server Middleware**: Expects to return or receive a standard web `Response` object.
+- **Client Middleware**: Receives and returns a record of route strategical results (`Record<string, DataStrategyResult>`).
 
 Because these types are strictly invariant, `lingui-rr` provides separate factories. Under the hood, they share the same router logic, but `createLinguiClientMiddleware` handles redirects by throwing a React Router client navigation error, enabling smooth client-side redirects during path resolution.

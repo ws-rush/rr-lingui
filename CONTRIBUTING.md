@@ -10,8 +10,8 @@ This project uses `pnpm` workspaces for local development and E2E test orchestra
 
 ### Prerequisites
 
-* **Node.js**: `v22.22` or newer (matching `.node-version` / `engines`)
-* **pnpm**: `v10.10.0` or newer
+- **Node.js**: `v22.22` or newer (matching `.node-version` / `engines`)
+- **pnpm**: `v10.10.0` or newer
 
 ### Installation
 
@@ -25,23 +25,32 @@ pnpm install
 
 During development, you can run the following validation scripts:
 
-* **Typechecking**: Validate typescript types across the repository.
+- **Linting**: Run Oxlint across the repository.
+  ```bash
+  pnpm run lint
+  ```
+- **Formatting**: Check Oxfmt formatting.
+  ```bash
+  pnpm run format:check
+  ```
+- **Typechecking**: Validate typescript types across the repository.
   ```bash
   pnpm run typecheck
   ```
-* **Building**: Build the library output (`dist/`).
+- **Building**: Build the library output (`dist/`).
   ```bash
   pnpm run build
   ```
-* **Unit Tests**: Run unit tests under `/tests` using Vitest.
+- **Unit Tests**: Run unit tests under `/tests` using Vitest.
   ```bash
   pnpm test
   ```
-* **E2E Integration Tests**: Run E2E tests under `/e2e` using Playwright.
+- **E2E Integration Tests**: Run E2E tests under `/e2e` using Playwright.
+
   ```bash
   # Install Playwright browsers (first-time setup)
   pnpm --filter @lingui-rr/e2e install-browsers
-  
+
   # Run the E2E tests
   pnpm --filter @lingui-rr/e2e test
   ```
@@ -76,9 +85,9 @@ We use the interactive version bumping tool `bumpp` to manage version upgrades, 
      ...
    ```
 3. Once you choose the version:
-   * The tool updates `"version"` in [package.json](file:///package.json).
-   * It creates a git commit (e.g. `v0.1.1`).
-   * It tags the commit with the new version (e.g. `v0.1.1`).
-   * It pushes both the commit and tag to GitHub.
+   - The tool updates `"version"` in [package.json](file:///package.json).
+   - It creates a git commit (e.g. `v0.1.1`).
+   - It tags the commit with the new version (e.g. `v0.1.1`).
+   - It pushes both the commit and tag to GitHub.
 
 Our GitHub Actions workflow at [.github/workflows/publish.yml](file:///.github/workflows/publish.yml) will automatically run, build the package, and publish it to the npm registry.

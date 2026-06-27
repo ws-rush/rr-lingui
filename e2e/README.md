@@ -7,12 +7,12 @@ that breaks the library in a real browser — middleware redirects, catalog
 rendering, the `/change-locale` action round-trip, and cookie/localStorage
 persistence across reloads.
 
-| Config | `server` | `mode` | `prefixDefaultLocale` | Persistence |
-| --- | --- | --- | --- | --- |
-| `ssr-url-prefix` | `true` | `url-prefix` | `true` | server cookie |
-| `ssr-context` | `true` | `context` | — | server cookie |
-| `client-url-prefix` | `false` | `url-prefix` | `false` | client cookie |
-| `client-context` | `false` | `context` | — | `localStorage` |
+| Config              | `server` | `mode`       | `prefixDefaultLocale` | Persistence    |
+| ------------------- | -------- | ------------ | --------------------- | -------------- |
+| `ssr-url-prefix`    | `true`   | `url-prefix` | `true`                | server cookie  |
+| `ssr-context`       | `true`   | `context`    | —                     | server cookie  |
+| `client-url-prefix` | `false`  | `url-prefix` | `false`               | client cookie  |
+| `client-context`    | `false`  | `context`    | —                     | `localStorage` |
 
 ## How it works
 
